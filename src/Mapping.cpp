@@ -1,4 +1,5 @@
 #include "Mapping.h"
+#include "AVL.h"
 
 // Maps the tables r and s into an array of Bitsets
 vector<Bitset> Mapping::mapDataToBitsets(vvi& r, vvi& s){
@@ -20,32 +21,31 @@ vector<Bitset> Mapping::mapDataToBitsets(vvi& r, vvi& s){
 // Maps the tables r and s into a table of integers
 vvi Mapping::mapDataToVectors(vvi &r, vvi &s){
 	vvi itemsets;
+	AVL* avl = new AVL();
+	pair<bool,int> res;
 	for(uint32_t i=0;i<r.size();++i) {
 		for(uint32_t j=0;j<r[i].size();++j) {
 			if(r[i][j]==0)
 				continue;
-
-			it = objectToId.find(r[i][j]);
-			if(it==objectToId.end()) {
+			res = avl->find(r[i][j]);
+			if(!res.first) {
 				int size = itemsets.size();
 				vector<int> new_itemset;
 				new_itemset.push_back(j);
 				itemsets.push_back(new_itemset);
-				objectToId.insert(make_pair(r[i][j],size));
+				avl->insert(r[i][j],size);
 			} else {
-				itemsets[it->second].push_back(j);
+				itemsets[res.second].push_back(j);
 			}
 		}
 	}
 	int cnt = r[0].size();
 	for(uint32_t i=0;i<s.size();++i) {
 		for(uint32_t j=0;j<s[i].size();++j) {
-			it = objectToId.find(s[i][j]);
-			if(it==objectToId.end() || s[i][j]==0)
+			res = avl->find(s[i][j]);
+			if(!res.first || s[i][j]==0)
 				continue;
-			int p = it->second;
-			int l = j+cnt;
-			itemsets[p].push_back(l);
+			itemsets[res.second].push_back(j+cnt);
 		}
 	}
 	for(uint32_t i=0;i<itemsets.size();++i){	
@@ -57,6 +57,6 @@ vvi Mapping::mapDataToVectors(vvi &r, vvi &s){
 		}
 		itemsets[i].resize(p);
 	}
-	objectToId.clear();
+	delete avl;
 	return itemsets;
 }

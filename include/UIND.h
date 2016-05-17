@@ -10,5 +10,6 @@ class UIND{
 		UIND(){};
 		vector<Bitset> computeClosure(vector<Bitset>& tab);
 		vector<vector<double> > computeSupports(vector<Bitset>& tab);
+		vector<vector<double> > computeSupports(vector<Bitset>& tab, double error);
 };
 #endif // UIND_H

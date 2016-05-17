@@ -6,27 +6,42 @@ TARGETDIR := bin
 TARGET := bin/main
 TARGET_TESTER := bin/tester
 SRCEXT := cpp
-SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+SOURCES := $(wildcard $(SRCDIR)/*.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 INC := -I include
 
-$(TARGET): $(OBJECTS)
+
+
+$(TARGET): $(OBJECTS) $(BUILDDIR)/main.o
+	@echo "$(SOURCES)"
+	@echo "$(OBJECTS)"
 	@echo " Linking..."
 	@mkdir -p $(TARGETDIR)
 	@echo " $(CC) $(CFLAGS) $^ -o $(TARGET)"; $(CC) $(CFLAGS) $^ -o $(TARGET)
 
-$(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
+$(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT) 
 	@mkdir -p $(BUILDDIR)
 	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) -c $(INC) -c -o $@ $<
+
+
+$(BUILDDIR)/main.o: main.cpp $(wildcard include/*.h)
+	@echo "$(wildcard include/*.h)"
+	@mkdir -p $(BUILDDIR)
+	$(CC) $(CFLAGS) $(INC) $< -c -o $@
+
 
 clean:
 	@echo " Cleaning..."; 
 	@echo " $(RM) -r $(BUILDDIR) $(TARGET)"; $(RM) -r $(BUILDDIR) $(TARGETDIR)
 
+$(BUILDDIR)/tester.o: test/tester.cpp $(wildcard include/*.h)
+	@mkdir -p $(BUILDDIR)	
+	$(CC) $(CFLAGS) $(INC) $< -c -o $@
+	
 # Tests
-tester: $(OBJECTS)
+tester: $(OBJECTS) $(BUILDDIR)/tester.o
 	@echo " Testing..."
 	@mkdir -p $(TARGETDIR)
-	@echo "$(CC) $(CFLAGS) test/tester.cpp $(INC) -o $(TARGET_TESTER)"; $(CC) $(CFLAGS) test/tester.cpp $(INC) -o $(TARGET_TESTER)
+	$(CC) $(CFLAGS) $^ -o $(TARGET_TESTER)
 
 .PHONY: clean

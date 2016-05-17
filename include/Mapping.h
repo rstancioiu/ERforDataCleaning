@@ -7,9 +7,6 @@
 #include "Util.h"
 
 class Mapping{	
-
-	unordered_map<int,int> objectToId;
-	unordered_map<int,int>::iterator it;
 	
 	public:
 		Mapping(){};
