@@ -1,0 +1,8 @@
+# Ignore build directory
+build
+
+# Ignore any executables
+bin/*
+
+# Remove the test files
+*.txt
