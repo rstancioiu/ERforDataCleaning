@@ -13,7 +13,7 @@ class Bitset{
 		Bitset(const Bitset &obj);
 		Bitset operator&(const Bitset& b);
 		Bitset operator|(const Bitset& b);
-		bool check(int n);
+		bool check(uint32_t n);
 		int size();
 		void updateSize(int n);
 		string toString();

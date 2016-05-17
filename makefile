@@ -1,8 +1,10 @@
 CC := g++
-CFLAGS :=-c -Wall -O2 -std=c++11
+CFLAGS := -Wall -O2 -std=c++11
 SRCDIR := src
 BUILDDIR := build
+TARGETDIR := bin
 TARGET := bin/main
+TARGET_TESTER := bin/tester
 SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
@@ -10,22 +12,21 @@ INC := -I include
 
 $(TARGET): $(OBJECTS)
 	@echo " Linking..."
-	@echo " $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)
+	@mkdir -p $(TARGETDIR)
+	@echo " $(CC) $(CFLAGS) $^ -o $(TARGET)"; $(CC) $(CFLAGS) $^ -o $(TARGET)
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)
-	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
+	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) -c $(INC) -c -o $@ $<
 
 clean:
 	@echo " Cleaning..."; 
-	@echo " $(RM) -r $(BUILDDIR) $(TARGET)"; $(RM) -r $(BUILDDIR) $(TARGET)
+	@echo " $(RM) -r $(BUILDDIR) $(TARGET)"; $(RM) -r $(BUILDDIR) $(TARGETDIR)
 
 # Tests
-tester:
-	$(CC) $(CFLAGS) test/tester.cpp $(INC) $(LIB) -o bin/tester
-
-# Spikes
-ticket:
-	$(CC) $(CFLAGS) spikes/ticket.cpp $(INC) $(LIB) -o bin/ticket
+tester: $(OBJECTS)
+	@echo " Testing..."
+	@mkdir -p $(TARGETDIR)
+	@echo "$(CC) $(CFLAGS) test/tester.cpp $(INC) -o $(TARGET_TESTER)"; $(CC) $(CFLAGS) test/tester.cpp $(INC) -o $(TARGET_TESTER)
 
 .PHONY: clean

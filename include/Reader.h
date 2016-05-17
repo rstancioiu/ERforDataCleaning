@@ -12,7 +12,10 @@ class Reader{
 		void read(ifstream& input, vector<vector<int> >& tab);
 
 	public:
-		Reader(){};
+		Reader(){
+			ios_base::sync_with_stdio();
+			cin.tie(0);
+		};
 		pair<vvi,vvi> readFiles(const char* data_r,const char* data_s);
 };
 #endif // READER_H

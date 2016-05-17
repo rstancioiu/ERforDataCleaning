@@ -48,7 +48,7 @@ string Bitset::toString(){
 
 // Checks the value of the bit found at the position n
 // in the bitset.
-bool Bitset::check(int n){
+bool Bitset::check(uint32_t n){
 	if(n>=tab.size()) return false;
 	return tab[n];
 }
