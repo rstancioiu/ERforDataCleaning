@@ -5,69 +5,47 @@
 #include "UIND.h"
 #include "AVL.h"
 
-const char* data_r = "test/r-large.txt";
-const char* data_s = "test/s-large.txt";
+const char* data_r;
+const char* data_s;
 
-void read();
-void printVectors();
-void mapData();
-void computeUIND();
+void Test();
 vvi r,s;
 
-int main(){
+int main(int args, char* argv[]){
 	ios_base::sync_with_stdio(0);
 	cin.tie(0);
-	read();
-	mapData();
-	computeUIND();
+	data_r = argv[1];
+	data_s = argv[2];
+	Test();
 
 	return 0;
 }
 
-
-
-// Reads two files r and s by calling the class Reader
-// and prints out the time spent for reading.
-void read(){
-	clock_t start,end;
-	double time;
-	start = clock();
+void Test(){
 	Reader* reader = new Reader();
 	pair<vvi,vvi> prs = reader->readFiles(data_r,data_s);
-	r = prs.first;
-	s = prs.second;
 	delete reader;
-	end = clock();
-	time = (double)(end-start)/CLOCKS_PER_SEC*1000.0;
-	cout<<"Time for reading: "<<time<<endl;
-}
-
-vector<Bitset> bitsets;
-
-// Maps the data read previously into an array of Bitsets
-void mapData(){
-	clock_t start,end;
-	double time;
-	start = clock();
 	Mapping* mapping = new Mapping();
- 	bitsets = mapping->mapDataToBitsets(r,s);
+	vector<Bitset> bitsets = mapping->mapDataToBitsets(prs.first,prs.second);
+	sort(bitsets.begin(),bitsets.end());
 	delete mapping;
-	end = clock();
-	time = (double)(end-start)/CLOCKS_PER_SEC*1000.0;
-	cout<<"Time for mapping: "<<time<<endl;
+	for(uint32_t i=0;i<bitsets.size();++i){
+		cout<<bitsets[i].toString()<<endl;
+	}
+	cout<<endl;
+
+	UIND* uind = new UIND();
+	vector<vector<double> > supports = uind->computeSupports(bitsets);
+	for(uint32_t i=0; i<supports.size(); ++i){
+		for(uint32_t j=0; j< supports[i].size();++j){
+			cout<<fixed<<setprecision(2)<<supports[i][j]<<" ";
+		}
+		cout<<endl;
+	}
+	cout<<endl;
+	delete uind;
 }
 
-// Given an array of bitsets, it computes the closure or 
-// the support for each attribute.
-void computeUIND(){
-	clock_t start,end;
-	double time;
-	start = clock();
-	UIND* uind = new UIND();
-	//uind->computeClosure(bitsets);
-	uind->computeSupports(bitsets,0.9);
-	delete uind;
-	end = clock();
-	time = (double)(end-start)/CLOCKS_PER_SEC*1000.0;
-	cout<<"Time for UIND: "<<time<<endl;
-}
+
+
+

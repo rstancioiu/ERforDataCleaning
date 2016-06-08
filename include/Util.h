@@ -8,9 +8,12 @@
 #include <unordered_map>
 #include <string>
 #include <iomanip>
+#include <map>
 
 using namespace std;
 
 typedef vector<vector<int> > vvi;
+typedef vector<string> vs;
+typedef vector<bool> vb;
 
 #endif // UTIL_H

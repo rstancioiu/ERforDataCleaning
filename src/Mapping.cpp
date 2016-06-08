@@ -25,8 +25,6 @@ vvi Mapping::mapDataToVectors(vvi &r, vvi &s){
 	pair<bool,int> res;
 	for(uint32_t i=0;i<r.size();++i) {
 		for(uint32_t j=0;j<r[i].size();++j) {
-			if(r[i][j]==0)
-				continue;
 			res = avl->find(r[i][j]);
 			if(!res.first) {
 				int size = itemsets.size();
@@ -43,7 +41,7 @@ vvi Mapping::mapDataToVectors(vvi &r, vvi &s){
 	for(uint32_t i=0;i<s.size();++i) {
 		for(uint32_t j=0;j<s[i].size();++j) {
 			res = avl->find(s[i][j]);
-			if(!res.first || s[i][j]==0)
+			if(!res.first)
 				continue;
 			itemsets[res.second].push_back(j+cnt);
 		}

@@ -1,31 +1,32 @@
 #include "Reader.h"
+#include "ReadTextFile.h"
 #include <sstream>
 #include <iostream>
 
 // Reades two files r and s
-pair<vvi, vvi> Reader::readFiles(const char* data_r,const char* data_s){
+pair< pair<vvi, vs>,pair<vvi,vs> > Reader::readFiles(const char* data_r,const char* data_s){
 	vvi r,s;
-	ifstream input;
-	input.open(data_r);
-	read(input,r);
-	input.close();
-	input.clear();
-	input.open(data_s);
-	read(input,s);
-	input.close();
-	input.clear();
-	return make_pair(r,s);
+	vs cr, cs;
+	read(data_r, r, cr);
+	read(data_s, s, cs);
+	return make_pair(make_pair(r,cr), make_pair(s,cs));
 }
 
 // Reades an input file and writes the results into an 2d array
-void Reader::read(ifstream& input, vector<vector<int> >& tab){
-	int number;
-	for(string line; getline(input,line);){
-		istringstream iss(line);
-		vector<int> tuple;
-		while(iss>>number){
-			tuple.push_back(number);
+void Reader::read(const char* data, vvi& tab, vs& colName){
+	char _cDelim = '\0';
+	ReadTextFile textFile(_cDelim);
+	if ( ! textFile.openTextFile(data, colName) )
+		return;
+
+	vector<string> vstring;
+	while(textFile.getline(vstring)){
+		vector<int> new_tab;
+		for(uint32_t i=0;i<vstring.size();++i)
+		{
+			int value = atoi(vstring[i].c_str());
+			new_tab.push_back(value);
 		}
-		tab.push_back(tuple);
+		tab.push_back(new_tab);
 	}
 }

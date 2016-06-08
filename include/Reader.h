@@ -9,13 +9,10 @@
 class Reader{	
 
 	private:
-		void read(ifstream& input, vector<vector<int> >& tab);
+		void read(const char* data, vvi& tab, vs& colName);
 
 	public:
-		Reader(){
-			ios_base::sync_with_stdio();
-			cin.tie(0);
-		};
-		pair<vvi,vvi> readFiles(const char* data_r,const char* data_s);
+		Reader(){};
+		pair< pair<vvi, vs>, pair<vvi,vs> > readFiles(const char* data_r,const char* data_s);
 };
 #endif // READER_H
